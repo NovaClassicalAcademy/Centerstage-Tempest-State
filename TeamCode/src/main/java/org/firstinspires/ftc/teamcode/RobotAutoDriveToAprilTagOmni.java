@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
-    final double DESIRED_DISTANCE = 8.0; //inches
-    final double SPEED_GAIN  =  0.014  ;
-    final double STRAFE_GAIN =  0.014 ;
+    final double DESIRED_DISTANCE = 10.0; //inches
+    final double SPEED_GAIN  =  0.008  ;
+    final double STRAFE_GAIN =  0.009 ;
     final double TURN_GAIN   =  0.005 ;
 
     final double MAX_AUTO_SPEED = 0.4;
@@ -39,7 +39,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     private DcMotor rightBackDrive   = null;
 
     private static final boolean USE_WEBCAM = true;
-    private static final int DESIRED_TAG_ID = 3;
+    private static final int DESIRED_TAG_ID = 2;
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
     private AprilTagDetection desiredTag = null;
