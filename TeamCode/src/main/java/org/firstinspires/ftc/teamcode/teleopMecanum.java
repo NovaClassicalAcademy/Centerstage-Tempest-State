@@ -10,13 +10,15 @@ public class teleopMecanum extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        DcMotor frontLeft = hardwareMap.dcMotor.get("fl");
-        DcMotor backLeft = hardwareMap.dcMotor.get("bl");
-        DcMotor frontRight = hardwareMap.dcMotor.get("fr");
-        DcMotor backRight = hardwareMap.dcMotor.get("br");
+        DcMotor frontLeft = hardwareMap.dcMotor.get("fl"); //port 3
+        DcMotor backLeft = hardwareMap.dcMotor.get("bl"); //port 1
+        DcMotor frontRight = hardwareMap.dcMotor.get("fr"); // port 2
+        DcMotor backRight = hardwareMap.dcMotor.get("br"); //port 0
+        DcMotor lift1 = hardwareMap.dcMotor.get("liftLeft");
+        DcMotor lift2 = hardwareMap.dcMotor.get("liftRight");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 
@@ -24,8 +26,10 @@ public class teleopMecanum extends LinearOpMode {
 
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y;
-            double rx = gamepad1.left_stick_x;
-            double x = gamepad1.right_stick_x;
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+            double lift1power = gamepad2.left_stick_y;
+            double lift2power = gamepad2.right_stick_y;
             double denominator = 1.5;
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
@@ -35,6 +39,8 @@ public class teleopMecanum extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             frontRight.setPower(frontRightPower);
             backRight.setPower(backRightPower);
+            lift1.setPower(lift1power);
+            lift2.setPower(lift2power);
             telemetry.update();
         }
     }

@@ -9,24 +9,20 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class auto extends OpMode {
     public BasicPIDController controller;
-    private DcMotorEx lift1, lift2;
+    private DcMotorEx lift;
     public static int targetPosition = 0;
     public static double p = 0.01, i = 0, d = 0;
     @Override
     public void init() {
         controller = new BasicPIDController(p, i, d);
-        lift1 = hardwareMap.get(DcMotorEx.class, "lift1");
-        lift2 = hardwareMap.get(DcMotorEx.class, "lift2");
+        lift = hardwareMap.get(DcMotorEx.class, "liftR");
     }
     @Override
     public void loop() {
         controller.setP(p);
-        double liftPower1 = controller.calculate(lift1.getCurrentPosition(), targetPosition);
-        double liftPower2 = controller.calculate(lift2.getCurrentPosition(), targetPosition);
-        lift1.setPower(liftPower1);
-        lift2.setPower(liftPower2);
-        telemetry.addData("currentPose", lift1.getCurrentPosition());
-        telemetry.addData("currentPose", lift2.getCurrentPosition());
+        double liftPower1 = controller.calculate(lift.getCurrentPosition(), targetPosition);
+        lift.setPower(liftPower1);
+        telemetry.addData("currentPose", lift.getCurrentPosition());
         telemetry.update();
     }
 }
