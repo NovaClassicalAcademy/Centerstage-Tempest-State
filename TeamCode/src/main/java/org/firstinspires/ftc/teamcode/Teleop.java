@@ -1,23 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 @Config
-@TeleOp
+@TeleOp (name = "Tele-Op", group = "alpha")
 
-public class betterTeleop extends OpMode {
+public class Teleop extends OpMode {
     public BasicPIDController controller;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight;
     private DcMotorEx liftL, liftR;
     public int targetPosition = 0;
-    public double p = 0.02, i = 0, d = 0.0001;
-    public double driveMultiplier = 1;
+    public double p = 0, i = 0, d = 0;
+    public double driveMultiplier = 0.8;
     @Override
     public void init() {
 
@@ -39,16 +37,12 @@ public class betterTeleop extends OpMode {
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        /*
-        test code for slow mode
         if(gamepad1.left_trigger > 0.1){
-            driveMultiplier = 0.5;
+            driveMultiplier = 0.4;
         }
-
         else {
-            driveMultiplier = 1;
+            driveMultiplier = 0.8;
         }
-        */
 
         double frontLeftPower = (y + x + rx) * driveMultiplier;
         double backLeftPower = (y - x + rx) * driveMultiplier;
@@ -66,7 +60,7 @@ public class betterTeleop extends OpMode {
         }
 
         if(gamepad1.dpad_down) {
-            targetPosition = 5;
+            targetPosition = 100;
         }
 
         double liftPowerL = controller.calculate(liftL.getCurrentPosition(), -targetPosition);
