@@ -15,13 +15,13 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
-                .lineToX(60)
+                .lineToX(10)
+                .turn(Math.toRadians(180))
+                .lineToY(10)
                 .turn(Math.toRadians(90))
-                .lineToY(60)
+                .lineToX(10)
                 .turn(Math.toRadians(90))
-                .lineToX(0)
-                .turn(Math.toRadians(90))
-                .lineToY(0)
+                .lineToY(10)
                 .turn(Math.toRadians(90))
                 .build());
 
