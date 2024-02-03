@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 public class BasicPIDController {
-
     private double kP;
     private final double kI;
     private final double kD;
@@ -9,8 +8,6 @@ public class BasicPIDController {
     private double totalError;
     private double velocityError;
     private double lastTimeStamp;
-
-    //constructor
     public BasicPIDController(double kP, double kI, double kD) {
         this.kP = kP;
         this.kI = kI;

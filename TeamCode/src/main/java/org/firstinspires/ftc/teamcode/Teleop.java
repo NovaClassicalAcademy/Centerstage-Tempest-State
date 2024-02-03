@@ -18,9 +18,10 @@ public class Teleop extends OpMode {
     public Servo axonL, axonR, hammerL, hammerR;
     public CRServo outtake;
     public static int targetPosition = 0;
-    public static double p = 0.005, i = 0, d = 0;
+    public static double p = 0.006, i = 0, d = 0;
     public double driveMultiplier = 1;
-
+    //public boolean isScoringPosition = true;
+    //public boolean shareButtonPressed = false;
     @Override
     public void init() {
 
@@ -39,8 +40,8 @@ public class Teleop extends OpMode {
         outtake = hardwareMap.get(CRServo.class, "outtake");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
-        axonL.setPosition(0.5);
-        axonR.setPosition(0.44);
+        axonL.setPosition(0.51);
+        axonR.setPosition(0.45);
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -74,17 +75,17 @@ public class Teleop extends OpMode {
         backRight.setPower(backRightPower);
 
         if(gamepad2.dpad_up) {
-            targetPosition += 14;
-            if(targetPosition >= 2000){             //top lift regulator
-                targetPosition = 2000;
+            targetPosition += 16;
+            if(targetPosition >= 2100){             //top lift regulator
+                targetPosition = 2100;
             }
         } else if(gamepad2.dpad_down){
-            targetPosition -= 14;
+            targetPosition -= 16;
             if(targetPosition <= 0){                //bottom lift regulator
                 targetPosition = 0;
             }
         }
-        if(targetPosition <= 800){                  //outtake zero position
+        if(targetPosition <= 900){                  //outtake zero position
             axonL.setPosition(0.51);
             axonR.setPosition(0.45);
         } else{                                     //scoring pos
@@ -97,19 +98,19 @@ public class Teleop extends OpMode {
             }
         }
         if(gamepad2.left_trigger >= 0.3){            //intake
-            outtake.setPower(-1);
+            outtake.setPower(-0.8);
             intake.setPower(-1);
-        } else if(gamepad2.right_trigger >= 0.3){    //outtake
-            outtake.setPower(1);
+        }else if(gamepad2.right_trigger >= 0.3){    //outtake
+            outtake.setPower(0.8);
             intake.setPower(1);
-        } else{
+        }else{
             outtake.setPower(0);                    //idle
             intake.setPower(0);
         }
         if(gamepad1.left_bumper){                   //hammer zero
             hammerL.setPosition(0.79);
             hammerR.setPosition(0.23);
-        } else if(gamepad1.right_bumper){           //hammer out
+        }else if(gamepad1.right_bumper){           //hammer out
             hammerL.setPosition(0.4);
             hammerR.setPosition(0.8);
         }
