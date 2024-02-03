@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.List;
 @Config
 @TeleOp (name = "Tele-Op", group = "alpha")
-
+//comp
 public class Teleop extends OpMode {
     public BasicPIDController controller;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftL, liftR, intake;
