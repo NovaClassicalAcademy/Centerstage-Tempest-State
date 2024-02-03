@@ -20,8 +20,7 @@ public class Teleop extends OpMode {
     public static int targetPosition = 0;
     public static double p = 0.006, i = 0, d = 0;
     public double driveMultiplier = 1;
-    //public boolean isScoringPosition = true;
-    //public boolean shareButtonPressed = false;
+
     @Override
     public void init() {
 
@@ -60,7 +59,9 @@ public class Teleop extends OpMode {
         double rx = gamepad1.right_stick_x;
 
         if(gamepad1.left_trigger > 0.1){
-            driveMultiplier = 0.4;
+            driveMultiplier = 0.6;
+        }else if(gamepad1.left_trigger > 0.1 && gamepad1.right_trigger > 0.1){
+            driveMultiplier = 0.3;
         }else {
             driveMultiplier = 1;
         }
@@ -75,12 +76,12 @@ public class Teleop extends OpMode {
         backRight.setPower(backRightPower);
 
         if(gamepad2.dpad_up) {
-            targetPosition += 16;
+            targetPosition += 14;
             if(targetPosition >= 2100){             //top lift regulator
                 targetPosition = 2100;
             }
         } else if(gamepad2.dpad_down){
-            targetPosition -= 16;
+            targetPosition -= 14;
             if(targetPosition <= 0){                //bottom lift regulator
                 targetPosition = 0;
             }
