@@ -5,21 +5,25 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.List;
 @Config
 @TeleOp (name = "Tele-Op", group = "alpha")
-//comp
+
 public class Teleop extends OpMode {
     public BasicPIDController controller;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftL, liftR, intake;
     public Servo axonL, axonR, hammerL, hammerR;
     public CRServo outtake;
     public static int targetPosition = 0;
-    public static double p = 0.006, i = 0, d = 0;
+    public static double p = 0.005, i = 0, d = 0;
     public double driveMultiplier = 1;
+    public ElapsedTime gametime = new ElapsedTime();
 
     @Override
     public void init() {
@@ -28,6 +32,13 @@ public class Teleop extends OpMode {
 
         liftL = hardwareMap.get(DcMotorEx.class, "liftL");
         liftR = hardwareMap.get(DcMotorEx.class, "liftR");
+
+        liftR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        liftR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeft = hardwareMap.get(DcMotorEx.class, "fl");
         frontRight = hardwareMap.get(DcMotorEx.class, "fr");
         backLeft = hardwareMap.get(DcMotorEx.class, "bl");
@@ -50,7 +61,10 @@ public class Teleop extends OpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
+
+        gametime.reset();
     }
+
     @Override
     public void loop() {
 
@@ -59,9 +73,7 @@ public class Teleop extends OpMode {
         double rx = gamepad1.right_stick_x;
 
         if(gamepad1.left_trigger > 0.1){
-            driveMultiplier = 0.6;
-        }else if(gamepad1.left_trigger > 0.1 && gamepad1.right_trigger > 0.1){
-            driveMultiplier = 0.3;
+            driveMultiplier = 0.4;
         }else {
             driveMultiplier = 1;
         }
@@ -76,21 +88,21 @@ public class Teleop extends OpMode {
         backRight.setPower(backRightPower);
 
         if(gamepad2.dpad_up) {
-            targetPosition += 14;
+            targetPosition += 17;
             if(targetPosition >= 2100){             //top lift regulator
                 targetPosition = 2100;
             }
         } else if(gamepad2.dpad_down){
-            targetPosition -= 14;
+            targetPosition -= 17;
             if(targetPosition <= 0){                //bottom lift regulator
                 targetPosition = 0;
             }
         }
-        if(targetPosition <= 900){                  //outtake zero position
+        if(targetPosition <= 950){                  //outtake zero position
             axonL.setPosition(0.51);
             axonR.setPosition(0.45);
         } else{                                     //scoring pos
-            if (!gamepad2.share) {
+            if (!gamepad2.a) {
                 axonL.setPosition(0.77);
                 axonR.setPosition(0.71);
             }else{
@@ -99,10 +111,10 @@ public class Teleop extends OpMode {
             }
         }
         if(gamepad2.left_trigger >= 0.3){            //intake
-            outtake.setPower(-0.8);
+            outtake.setPower(-0.65);
             intake.setPower(-1);
         }else if(gamepad2.right_trigger >= 0.3){    //outtake
-            outtake.setPower(0.8);
+            outtake.setPower(0.65);
             intake.setPower(1);
         }else{
             outtake.setPower(0);                    //idle
@@ -119,5 +131,14 @@ public class Teleop extends OpMode {
 
         liftL.setPower(liftPower);
         liftR.setPower(-liftPower);
+
+        telemetry.addData("gametime", gametime.time());
+
+        /*
+        if(gametime.time() > 115){
+            controller.setP(0.008);
+        }
+        */
+
     }
 }

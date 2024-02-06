@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 public class BasicPIDController {
     private double kP;
-    private final double kI;
-    private final double kD;
+    private double kI;
+    private double kD;
     private double previousError;
     private double totalError;
     private double velocityError;
@@ -28,5 +28,12 @@ public class BasicPIDController {
     }
     public void setP(double p) {
         this.kP = p;
+    }
+
+    public void setI(double i) {
+        this.kI = i;
+    }
+    public void setD(double d) {
+        this.kD = d;
     }
 }
