@@ -45,8 +45,8 @@ public class Teleop extends OpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "br");
         axonL = hardwareMap.get(Servo.class, "axonL");
         axonR = hardwareMap.get(Servo.class, "axonR");
-        hammerL = hardwareMap.get(Servo.class, "hammerL");
-        hammerR = hardwareMap.get(Servo.class, "hammerR");
+        //hammerL = hardwareMap.get(Servo.class, "hammerL");
+        //hammerR = hardwareMap.get(Servo.class, "hammerR");
         outtake = hardwareMap.get(CRServo.class, "outtake");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
@@ -88,12 +88,12 @@ public class Teleop extends OpMode {
         backRight.setPower(backRightPower);
 
         if(gamepad2.dpad_up) {
-            targetPosition += 17;
+            targetPosition += 21;
             if(targetPosition >= 2100){             //top lift regulator
                 targetPosition = 2100;
             }
         } else if(gamepad2.dpad_down){
-            targetPosition -= 17;
+            targetPosition -= 21;
             if(targetPosition <= 0){                //bottom lift regulator
                 targetPosition = 0;
             }
@@ -129,12 +129,12 @@ public class Teleop extends OpMode {
         }
         double liftPower = controller.calculate(liftL.getCurrentPosition(), -targetPosition);
 
-        liftL.setPower(liftPower);
         liftR.setPower(-liftPower);
+        liftL.setPower(liftPower);
 
         telemetry.addData("gametime", gametime.time());
 
-        /*
+        /* <-- this works but its annoying to have in teleop for now
         if(gametime.time() > 115){
             controller.setP(0.008);
         }
