@@ -106,8 +106,8 @@ public class Teleop extends OpMode {
                 axonL.setPosition(0.77);
                 axonR.setPosition(0.71);
             }else{
-                axonL.setPosition(0.5);
-                axonR.setPosition(0.44);
+                axonL.setPosition(0.51);
+                axonR.setPosition(0.45);
             }
         }
         if(gamepad2.left_trigger >= 0.3){            //intake
