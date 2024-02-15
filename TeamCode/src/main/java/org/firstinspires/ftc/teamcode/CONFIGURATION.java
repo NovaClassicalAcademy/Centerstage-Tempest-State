@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 public class CONFIGURATION {
 /*
 
-    GitHub Commit Token (No-Expiration): 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
+    GitHub Commit Token (No-Expiration): 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
 
     Control Hub:
 
