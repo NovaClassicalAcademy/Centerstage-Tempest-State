@@ -189,15 +189,6 @@ public class BlueFar_Backup extends OpMode {
                 .splineToConstantHeading(new Vector2d(30, 11), 0)
                 .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
                 .build();
-        Action TrajectoryLeft4 = drive.actionBuilder(new Pose2d(44, 29, Math.PI))
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                .build();
-        Action TrajectoryLeft5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
-                .build();
 
         Action TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
                 .splineToSplineHeading(new Pose2d(-47, 24, Math.toRadians(0)), Math.PI)
@@ -210,15 +201,6 @@ public class BlueFar_Backup extends OpMode {
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(30, 11), 0)
                 .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
-                .build();
-        Action TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(44, -29, Math.PI))
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                .build();
-        Action TrajectoryMiddle5 = drive.actionBuilder(new Pose2d(-67.5, -7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
                 .build();
 
         Action TrajectoryRight1 = drive.actionBuilder(drive.pose)
@@ -233,15 +215,6 @@ public class BlueFar_Backup extends OpMode {
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(30, 11), 0)
                 .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
-                .build();
-        Action TrajectoryRight4 = drive.actionBuilder(new Pose2d(44, 29, Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                .build();
-        Action TrajectoryRight5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
                 .build();
 
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {

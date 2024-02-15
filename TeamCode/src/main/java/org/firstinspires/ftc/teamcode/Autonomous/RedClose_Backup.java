@@ -189,23 +189,7 @@ public class RedClose_Backup extends OpMode {
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(49, -25), Math.PI / 2)
                 .build();
-        //score
-        //bring arm back down
-        Action TrajectoryLeft3 = drive.actionBuilder(new Pose2d(49, -25, Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(11.5, -51), Math.PI) //-52
-                .splineToConstantHeading(new Vector2d(-40, -51), Math.PI) //-52
-                .splineToConstantHeading(new Vector2d(-57, -26.5), Math.PI)
-                .lineToX(-60)
-                .build();
-        //intake pixels
-        Action TrajectoryLeft4 = drive.actionBuilder(new Pose2d(-57, -26, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, -45), 0)
-                .splineToConstantHeading(new Vector2d(11.5, -45), 0)
-                .splineToConstantHeading(new Vector2d(48.5, -28), 0)
-                .build();
 
-        //score pixels
         Action TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
                 .setTangent(0)
                 .splineToLinearHeading(new Pose2d(11.5, -31, Math.toRadians(90)), Math.PI / 2)
@@ -213,19 +197,6 @@ public class RedClose_Backup extends OpMode {
         Action TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(11.5, -31, Math.toRadians(90)))
                 .setReversed(true)
                 .splineToLinearHeading(new Pose2d(49, -33, Math.toRadians(180)), Math.PI / 2)
-                .build();
-        Action TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(49, -33, Math.toRadians(180)))
-                .setReversed(false)
-                .splineToConstantHeading(new Vector2d(11.5, -52), Math.PI)
-                .splineToConstantHeading(new Vector2d(-40, -52), Math.PI)
-                .splineToConstantHeading(new Vector2d(-57, -27), Math.PI)
-                .lineToX(-59)
-                .build();
-        Action TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(-59, -27, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, -48), 0)
-                .splineToConstantHeading(new Vector2d(11.5, -48), 0)
-                .splineToConstantHeading(new Vector2d(48.5, -34), 0)
                 .build();
 
         Action TrajectoryRight1 = drive.actionBuilder(drive.pose)
@@ -235,19 +206,6 @@ public class RedClose_Backup extends OpMode {
         Action TrajectoryRight2 = drive.actionBuilder(new Pose2d(32, -29, Math.toRadians(180)))
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(49, -42), 0)
-                .build();
-        Action TrajectoryRight3 = drive.actionBuilder(new Pose2d(49, -42, Math.toRadians(180)))
-                .setReversed(false)
-                .splineToConstantHeading(new Vector2d(11.5, -53), Math.PI)
-                .splineToConstantHeading(new Vector2d(-40, -53), Math.PI)
-                .splineToConstantHeading(new Vector2d(-58, -26.5), Math.PI)
-                .lineToX(-60.3)
-                .build();
-        Action TrajectoryRight4 = drive.actionBuilder(new Pose2d(-60.3, -26.5, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, -48), 0)
-                .splineToConstantHeading(new Vector2d(11.5, -48), 0)
-                .splineToConstantHeading(new Vector2d(48, -22), 0)
                 .build();
 
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
