@@ -45,8 +45,8 @@ public class Teleop extends OpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "br");
         axonL = hardwareMap.get(Servo.class, "axonL");
         axonR = hardwareMap.get(Servo.class, "axonR");
-        //hammerL = hardwareMap.get(Servo.class, "hammerL");
-        //hammerR = hardwareMap.get(Servo.class, "hammerR");
+        hammerL = hardwareMap.get(Servo.class, "hammerL");
+        hammerR = hardwareMap.get(Servo.class, "hammerR");
         outtake = hardwareMap.get(CRServo.class, "outtake");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
@@ -88,26 +88,26 @@ public class Teleop extends OpMode {
         backRight.setPower(backRightPower);
 
         if(gamepad2.dpad_up) {
-            targetPosition += 21;
+            targetPosition += 16;
             if(targetPosition >= 2100){             //top lift regulator
                 targetPosition = 2100;
             }
         } else if(gamepad2.dpad_down){
-            targetPosition -= 21;
+            targetPosition -= 16;
             if(targetPosition <= 0){                //bottom lift regulator
                 targetPosition = 0;
             }
         }
         if(targetPosition <= 950){                  //outtake zero position
-            axonL.setPosition(0.51);
-            axonR.setPosition(0.45);
+            axonL.setPosition(0.53);
+            axonR.setPosition(0.47);
         } else{                                     //scoring pos
             if (!gamepad2.a) {
                 axonL.setPosition(0.77);
                 axonR.setPosition(0.71);
             }else{
-                axonL.setPosition(0.51);
-                axonR.setPosition(0.45);
+                axonL.setPosition(0.53);
+                axonR.setPosition(0.47);
             }
         }
         if(gamepad2.left_trigger >= 0.3){            //intake
@@ -121,11 +121,11 @@ public class Teleop extends OpMode {
             intake.setPower(0);
         }
         if(gamepad1.left_bumper){                   //hammer zero
-            hammerL.setPosition(0.79);
-            hammerR.setPosition(0.23);
+            hammerL.setPosition(0.1);
+            hammerR.setPosition(0.7);
         }else if(gamepad1.right_bumper){           //hammer out
-            hammerL.setPosition(0.4);
-            hammerR.setPosition(0.8);
+            hammerL.setPosition(0.7);
+            hammerR.setPosition(0.1);
         }
         double liftPower = controller.calculate(liftL.getCurrentPosition(), -targetPosition);
 

@@ -10,12 +10,12 @@ public class CONFIGURATION {
             - Port 2: Front Right Drivetrain ("fr")
             - Port 3: Front Left Drivetrain ("fl")
     Servos
-            - Port 0:
+            - Port 0: hammerR
             - Port 1:
             - Port 2:
             - Port 3:
             - Port 4:
-            - Port 5:
+            - Port 5: hammerL
 
     Expansion Hub:
 
