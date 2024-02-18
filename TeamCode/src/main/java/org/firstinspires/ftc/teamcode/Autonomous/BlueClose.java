@@ -34,11 +34,22 @@ public class BlueClose extends OpMode {
     private VisionPortal visionPortal;
     private ColourMassDetectionProcessor colourMassDetectionProcessor;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, intake;
-    public Servo hammerL, hammerR;
+    public Servo hammerL, hammerR, drone;
     public CRServo outtake;
-    public static int lowerVal = 165; //160 before
-    public static int upperVal = 180;
+    Action TrajectoryLeft1;
+    Action TrajectoryLeft2;
+    Action TrajectoryLeft3;
+    Action TrajectoryLeft4;
 
+    Action TrajectoryMiddle1;
+    Action TrajectoryMiddle2;
+    Action TrajectoryMiddle3;
+    Action TrajectoryMiddle4;
+
+    Action TrajectoryRight1;
+    Action TrajectoryRight2;
+    Action TrajectoryRight3;
+    Action TrajectoryRight4;
     public class Lift {
         private DcMotorEx liftL, liftR;
 
@@ -69,14 +80,14 @@ public class BlueClose extends OpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    liftL.setPower(0.5);
-                    liftR.setPower(0.5);
+                    liftL.setPower(0.6);
+                    liftR.setPower(0.6);
                     initialized = true;
                 }
 
                 double pos = liftL.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < 1100) {
+                if (pos < 950) {
                     return true;
                 } else {
                     liftR.setPower(0);
@@ -100,8 +111,8 @@ public class BlueClose extends OpMode {
                 if (!initialized) {
                     axonL.setPosition(0.51);
                     axonR.setPosition(0.45);
-                    liftL.setPower(-0.2);
-                    liftR.setPower(-0.2);
+                    liftL.setPower(-0.4);
+                    liftR.setPower(-0.4);
                     initialized = true;
                 }
 
@@ -151,6 +162,10 @@ public class BlueClose extends OpMode {
         outtake = hardwareMap.get(CRServo.class, "outtake");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
+        drone = hardwareMap.get(Servo.class, "drone");
+
+        drone.setPosition(0.2);
+
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -160,7 +175,87 @@ public class BlueClose extends OpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        telemetry.addLine("initialized");
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.5, 60, Math.toRadians(270)));
+
+        drive.pose = new Pose2d(11.5, 60, Math.toRadians(270));
+
+        TrajectoryLeft1 = drive.actionBuilder(drive.pose)
+
+                .splineToLinearHeading(new Pose2d(27, 38, Math.toRadians(180)), Math.PI / 2)
+                .build();
+        TrajectoryLeft2 = drive.actionBuilder(new Pose2d(27, 38, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(48, 43), 0)
+                .build();
+        TrajectoryLeft3 = drive.actionBuilder(new Pose2d(48, 43, Math.toRadians(180)))
+                .strafeTo(new Vector2d(41, 57))
+                .build();
+        /*
+        TrajectoryLeft3 = drive.actionBuilder(new Pose2d(48, 43, Math.toRadians(180)))
+                .setReversed(false)
+                .splineToConstantHeading(new Vector2d(11.5, 62), Math.PI)
+                .splineToConstantHeading(new Vector2d(-40, 62), Math.PI)
+                .splineToConstantHeading(new Vector2d(-58, 48), Math.PI)
+                .lineToX(-63.3)
+                .build();
+        //intake pixels
+        TrajectoryLeft4 = drive.actionBuilder(new Pose2d(-63.3, 44, Math.PI))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-40, 65), 0)
+                .splineToConstantHeading(new Vector2d(11.5, 65), 0)
+                .splineToConstantHeading(new Vector2d(48, 40), 0)
+                .build();
+*/
+        //score pixels
+
+        TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(11.5, 30, Math.toRadians(270)), Math.PI)
+                .build();
+        TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(11.5, 31, Math.toRadians(270)))
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(45, 34, Math.toRadians(180)), Math.PI)
+                .build();
+        TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(45, 34, Math.toRadians(180)))
+                .strafeTo(new Vector2d(42, 56))
+                .build();
+        /*
+        TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(49, 33, Math.toRadians(180)))
+                .setReversed(false)
+                .splineToConstantHeading(new Vector2d(11.5, 62), Math.PI)
+                .splineToConstantHeading(new Vector2d(-40, 62), Math.PI)
+                .splineToConstantHeading(new Vector2d(-57, 27), Math.PI)
+                .lineToX(-59)
+                .build();
+        TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(-59, -27, Math.PI))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-40, 48), 0)
+                .splineToConstantHeading(new Vector2d(11.5, 48), 0)
+                .splineToConstantHeading(new Vector2d(48.5, 34), 0)
+                .build();
+*/
+        TrajectoryRight1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(5.5, 36, Math.toRadians(180)), Math.PI)
+                .build();
+        TrajectoryRight2 = drive.actionBuilder(new Pose2d(5.5, 36, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(48, 24), Math.PI)
+                .build();
+        TrajectoryRight3 = drive.actionBuilder(new Pose2d(48, 24, Math.toRadians(180)))
+                .strafeTo(new Vector2d(42, 56))
+                .build();
+        /*TrajectoryRight3 = drive.actionBuilder(new Pose2d(48, 25, Math.toRadians(180)))
+                .splineToConstantHeading(new Vector2d(11.5, 62), Math.PI) //-52
+                .splineToConstantHeading(new Vector2d(-40, 62), Math.PI) //-52
+                .splineToConstantHeading(new Vector2d(-57, 26.5), Math.PI)
+                .lineToX(-60)
+                .build();
+        TrajectoryRight4 = drive.actionBuilder(new Pose2d(-60, 26.5, Math.PI))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-40, 45), 0)
+                .splineToConstantHeading(new Vector2d(11.5, 45), 0)
+                .splineToConstantHeading(new Vector2d(48.5, 28), 0)
+                .build();
+                */
     }
     @Override
     public void init_loop() {
@@ -173,79 +268,6 @@ public class BlueClose extends OpMode {
     @Override
     public void start() {
         Lift lift = new Lift(hardwareMap);
-
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.5, 60, Math.toRadians(2270)));
-        drive.pose = new Pose2d(11.5, 60, Math.toRadians(270));
-
-        Action TrajectoryLeft1 = drive.actionBuilder(drive.pose)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(32, 29, Math.toRadians(180)), Math.PI / 2)
-                .build();
-        //lift up and axons move to scoring pose
-        Action TrajectoryLeft2 = drive.actionBuilder(new Pose2d(32, 29, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(49, 42), 0)
-                .build();
-        //score
-        //bring arm back down
-        Action TrajectoryLeft3 = drive.actionBuilder(new Pose2d(49, 42, Math.toRadians(180)))
-                .setReversed(false)
-                .splineToConstantHeading(new Vector2d(11.5, 53), Math.PI)
-                .splineToConstantHeading(new Vector2d(-40, 53), Math.PI)
-                .splineToConstantHeading(new Vector2d(-58, 26.5), Math.PI)
-                .lineToX(-60.3)
-                .build();
-        //intake pixels
-        Action TrajectoryLeft4 = drive.actionBuilder(new Pose2d(-60.3, -26.5, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, 48), 0)
-                .splineToConstantHeading(new Vector2d(11.5, 48), 0)
-                .splineToConstantHeading(new Vector2d(48, 22), 0)
-                .build();
-
-        //score pixels
-        Action TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
-
-                .splineToLinearHeading(new Pose2d(11.5, 31, Math.toRadians(270)), Math.PI)
-                .build();
-        Action TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(11.5, 31, Math.toRadians(90)))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(49, 33, Math.toRadians(180)), Math.PI / 2)
-                .build();
-        Action TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(49, 33, Math.toRadians(180)))
-                .setReversed(false)
-                .splineToConstantHeading(new Vector2d(11.5, 52), Math.PI)
-                .splineToConstantHeading(new Vector2d(-40, 52), Math.PI)
-                .splineToConstantHeading(new Vector2d(-57, 27), Math.PI)
-                .lineToX(-59)
-                .build();
-        Action TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(-59, -27, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, 48), 0)
-                .splineToConstantHeading(new Vector2d(11.5, 48), 0)
-                .splineToConstantHeading(new Vector2d(48.5, 34), 0)
-                .build();
-
-        Action TrajectoryRight1 = drive.actionBuilder(drive.pose)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(11, 28, Math.toRadians(180)), Math.PI)
-                .build();
-        Action TrajectoryRight2 = drive.actionBuilder(new Pose2d(32, 28, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(49, 25), Math.PI / 2)
-                .build();
-        Action TrajectoryRight3 = drive.actionBuilder(new Pose2d(49, 25, Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(11.5, 51), Math.PI) //-52
-                .splineToConstantHeading(new Vector2d(-40, 51), Math.PI) //-52
-                .splineToConstantHeading(new Vector2d(-57, 26.5), Math.PI)
-                .lineToX(-60)
-                .build();
-        Action TrajectoryRight4 = drive.actionBuilder(new Pose2d(-60, -26.5, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, 45), 0)
-                .splineToConstantHeading(new Vector2d(11.5, 45), 0)
-                .splineToConstantHeading(new Vector2d(48.5, 28), 0)
-                .build();
 
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
             visionPortal.stopLiveView();
@@ -262,7 +284,7 @@ public class BlueClose extends OpMode {
                 intake.setPower(-0.8);
 
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -278,7 +300,7 @@ public class BlueClose extends OpMode {
                 outtake.setPower(-0.65);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -290,7 +312,7 @@ public class BlueClose extends OpMode {
                                 TrajectoryLeft3
                         )
                 );
-
+/*
                 intake.setPower(1);
                 outtake.setPower(1);
                 hammerL.setPosition(0.7);
@@ -342,13 +364,15 @@ public class BlueClose extends OpMode {
                         lift.liftDown()
                 );
 
+ */
+
                 break;
             case MIDDLE:
                 Actions.runBlocking(TrajectoryMiddle1);
                 intake.setPower(-0.8);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -376,33 +400,34 @@ public class BlueClose extends OpMode {
                                 TrajectoryMiddle3
                         )
                 );
+                /*
                 intake.setPower(1);
                 outtake.setPower(1);
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 hammerL.setPosition(0.1);
                 hammerR.setPosition(0.7);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1); //out pos
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 hammerL.setPosition(0.1);
                 hammerR.setPosition(0.7); //zero pos
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -426,6 +451,8 @@ public class BlueClose extends OpMode {
                 Actions.runBlocking(
                         lift.liftDown()
                 );
+                */
+
                 break;
 
             case RIGHT:
@@ -433,7 +460,7 @@ public class BlueClose extends OpMode {
                 intake.setPower(-0.8);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -461,33 +488,34 @@ public class BlueClose extends OpMode {
                                 TrajectoryRight3
                         )
                 );
+                /*
                 intake.setPower(1);
                 outtake.setPower(1);
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 hammerL.setPosition(0.1);
                 hammerR.setPosition(0.7);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1); //out pos
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 hammerL.setPosition(0.1);
                 hammerR.setPosition(0.7); //zero pos
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -510,7 +538,7 @@ public class BlueClose extends OpMode {
                 Actions.runBlocking(
                         lift.liftDown()
                 );
-
+*/
                 break;
         }
     }

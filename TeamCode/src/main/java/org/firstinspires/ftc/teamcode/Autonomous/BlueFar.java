@@ -34,9 +34,25 @@ public class BlueFar extends OpMode {
     private VisionPortal visionPortal;
     private ColourMassDetectionProcessor colourMassDetectionProcessor;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, intake;
-    public Servo hammerL, hammerR;
+    public Servo hammerL, hammerR, drone;
     public CRServo outtake;
+    Action TrajectoryLeft1;
+    Action TrajectoryLeft2;
+    Action TrajectoryLeft3;
+    Action TrajectoryLeft4;
+    Action TrajectoryLeft5;
 
+    Action TrajectoryMiddle1;
+    Action TrajectoryMiddle2;
+    Action TrajectoryMiddle3;
+    Action TrajectoryMiddle4;
+    Action TrajectoryMiddle5;
+
+    Action TrajectoryRight1;
+    Action TrajectoryRight2;
+    Action TrajectoryRight3;
+    Action TrajectoryRight4;
+    Action TrajectoryRight5;
     public class Lift {
         private DcMotorEx liftL, liftR;
 
@@ -74,7 +90,7 @@ public class BlueFar extends OpMode {
 
                 double pos = liftL.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < 1100) {
+                if (pos < 1250) {
                     return true;
                 } else {
                     liftR.setPower(0);
@@ -155,12 +171,92 @@ public class BlueFar extends OpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        drone = hardwareMap.get(Servo.class, "drone");
+
+        drone.setPosition(0.2);
+
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
-        telemetry.addLine("initialized");
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-40, 60, Math.toRadians(270)));
+
+        drive.pose = new Pose2d(-40, 60, Math.toRadians(270));
+
+        TrajectoryLeft1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-35, 33, Math.toRadians(0)), 0)
+                .build();
+        TrajectoryLeft2 = drive.actionBuilder(new Pose2d(-35, 33, Math.toRadians(270)))
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(-48, 13, Math.toRadians(180)), Math.PI)
+                .splineToSplineHeading(new Pose2d(-67, 13, Math.toRadians(180)), 0)
+                .build();
+        TrajectoryLeft3 = drive.actionBuilder(new Pose2d(-67, 13, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(30, 11), 0)
+                .splineToConstantHeading(new Vector2d(44, 45), 0) //-52
+                .build();
+        /*
+        TrajectoryLeft4 = drive.actionBuilder(new Pose2d(44, 29, Math.PI))
+                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
+                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
+                .build();
+        TrajectoryLeft5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, 6), 0)
+                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
+                .build();
+*/
+        TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
+                .splineToSplineHeading(new Pose2d(-47, 22, Math.toRadians(0)), Math.PI)
+                .build();
+        TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(-47, 22, Math.toRadians(0)))
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(-67, 10, Math.toRadians(180)), Math.PI)
+                .build();
+        TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(-55, 10, Math.toRadians(180))) ///x was -67
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(30, 11), 0)
+                .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
+                .build();
+        /*
+        TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(44, 29, Math.PI))
+                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
+                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
+                .build();
+        TrajectoryMiddle5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, 6), 0)
+                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
+                .build();
+*/
+        TrajectoryRight1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-45, 10, Math.toRadians(90)), Math.PI/2)
+                .splineToSplineHeading(new Pose2d(-48, 21, Math.toRadians(90)), Math.PI/2)
+                .build();
+        TrajectoryRight2 = drive.actionBuilder(new Pose2d(-33, 21, Math.toRadians(90)))
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(-67, 11, Math.toRadians(180)), Math.toRadians(270))
+                .build();
+        TrajectoryRight3 = drive.actionBuilder(new Pose2d(-67, 11, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(30, 11), 0)
+                .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
+                .build();
+        /*
+        TrajectoryRight4 = drive.actionBuilder(new Pose2d(44, 29, Math.toRadians(180)))
+                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
+                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
+                .build();
+        TrajectoryRight5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, 6), 0)
+                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
+                .build();
+                */
+
     }
     @Override
     public void init_loop() {
@@ -173,76 +269,6 @@ public class BlueFar extends OpMode {
     public void start() {
         Lift lift = new Lift(hardwareMap);
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-40, 60, Math.toRadians(270)));
-        drive.pose = new Pose2d(-40, 60, Math.toRadians(270));
-
-        Action TrajectoryLeft1 = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-33, 33, Math.toRadians(0)), 0)
-                .build();
-        Action TrajectoryLeft2 = drive.actionBuilder(new Pose2d(-48, 33, Math.toRadians(270)))
-                .setReversed(true)
-                .splineToSplineHeading(new Pose2d(-48, 11, Math.toRadians(180)), Math.PI)
-                .splineToSplineHeading(new Pose2d(-63.5, 11, Math.toRadians(180)), 0)
-                .build();
-        Action TrajectoryLeft3 = drive.actionBuilder(new Pose2d(-63.5, 11, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, 11), 0)
-                .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
-                .build();
-        Action TrajectoryLeft4 = drive.actionBuilder(new Pose2d(44, 29, Math.PI))
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                .build();
-        Action TrajectoryLeft5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
-                .build();
-
-        Action TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
-                .splineToSplineHeading(new Pose2d(-47, 24, Math.toRadians(0)), Math.PI)
-                .build();
-        Action TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(-47, -24, Math.toRadians(0)))
-                .setReversed(true)
-                .splineToSplineHeading(new Pose2d(-63.5, 11, Math.toRadians(180)), Math.PI)
-                .build();
-        Action TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(-63.5, -11, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, 11), 0)
-                .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
-                .build();
-        Action TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(44, -29, Math.PI))
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                .build();
-        Action TrajectoryMiddle5 = drive.actionBuilder(new Pose2d(-67.5, -7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
-                .build();
-
-        Action TrajectoryRight1 = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-45, 10, Math.toRadians(90)), Math.PI/2)
-                .splineToSplineHeading(new Pose2d(-48, 21, Math.toRadians(90)), Math.PI/2)
-                .build();
-        Action TrajectoryRight2 = drive.actionBuilder(new Pose2d(-33, 21, Math.toRadians(90)))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-63.5, 11, Math.toRadians(180)), Math.toRadians(270))
-                .build();
-        Action TrajectoryRight3 = drive.actionBuilder(new Pose2d(-63.5, 11, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, 11), 0)
-                .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
-                .build();
-        Action TrajectoryRight4 = drive.actionBuilder(new Pose2d(44, 29, Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                .build();
-        Action TrajectoryRight5 = drive.actionBuilder(new Pose2d(-67.5, 7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
-                .build();
 
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
             visionPortal.stopLiveView();
@@ -274,10 +300,12 @@ public class BlueFar extends OpMode {
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(9000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                hammerL.setPosition(0.1);
+                hammerR.setPosition(0.7);
 
                 Actions.runBlocking(
                         new SequentialAction(
@@ -292,12 +320,16 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(1250);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 outtake.setPower(0);
 
+                Actions.runBlocking(
+                        lift.liftDown()
+                );
+/*
                 Actions.runBlocking(
                         new ParallelAction(
                                 lift.liftDown(),
@@ -311,7 +343,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -320,7 +352,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -329,7 +361,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.1); //out pos
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -357,7 +389,7 @@ public class BlueFar extends OpMode {
                 Actions.runBlocking(
                         lift.liftDown()
                 );
-
+*/
                 break;
             case MIDDLE:
                 Actions.runBlocking(TrajectoryMiddle1);
@@ -381,10 +413,14 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+
+                hammerL.setPosition(0.1);
+                hammerR.setPosition(0.7);
+
                 Actions.runBlocking(
                         new SequentialAction(
                                 TrajectoryMiddle3,
@@ -392,8 +428,35 @@ public class BlueFar extends OpMode {
                         )
                 );
 
+
                 outtake.setPower(-1);
                 intake.setPower(0);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                outtake.setPower(0);
+
+                Actions.runBlocking(
+                        new ParallelAction(
+                                lift.liftDown()
+                        )
+                );
+/*
+                intake.setPower(1);
+                outtake.setPower(1);
+                hammerL.setPosition(0.7);
+                hammerR.setPosition(0.1);
+
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 hammerL.setPosition(0.1);
                 hammerR.setPosition(0.7);
 
@@ -403,40 +466,11 @@ public class BlueFar extends OpMode {
                     throw new RuntimeException(e);
                 }
 
-                outtake.setPower(0);
-
-                Actions.runBlocking(
-                        new ParallelAction(
-                                lift.liftDown(),
-                                TrajectoryMiddle4
-                        )
-                );
-
-                intake.setPower(1);
-                outtake.setPower(1);
-                hammerL.setPosition(0.7);
-                hammerR.setPosition(0.1);
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                hammerL.setPosition(0.1);
-                hammerR.setPosition(0.7);
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1); //out pos
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -465,6 +499,8 @@ public class BlueFar extends OpMode {
                 Actions.runBlocking(
                         lift.liftDown()
                 );
+
+ */
                 break;
 
             case RIGHT:
@@ -489,7 +525,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -507,7 +543,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -516,18 +552,17 @@ public class BlueFar extends OpMode {
 
                 Actions.runBlocking(
                         new ParallelAction(
-                                lift.liftDown(),
-                                TrajectoryRight4
+                                lift.liftDown()
                         )
                 );
-
+/*
                 intake.setPower(1);
                 outtake.setPower(1);
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -536,7 +571,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -545,7 +580,7 @@ public class BlueFar extends OpMode {
                 hammerR.setPosition(0.1); //out pos
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -574,7 +609,7 @@ public class BlueFar extends OpMode {
                 Actions.runBlocking(
                         lift.liftDown()
                 );
-
+*/
                 break;
         }
     }

@@ -18,7 +18,7 @@ import java.util.List;
 public class Teleop extends OpMode {
     public BasicPIDController controller;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, liftL, liftR, intake;
-    public Servo axonL, axonR, hammerL, hammerR;
+    public Servo axonL, axonR, hammerL, hammerR, drone;
     public CRServo outtake;
     public static int targetPosition = 0;
     public static double p = 0.005, i = 0, d = 0;
@@ -47,6 +47,7 @@ public class Teleop extends OpMode {
         axonR = hardwareMap.get(Servo.class, "axonR");
         hammerL = hardwareMap.get(Servo.class, "hammerL");
         hammerR = hardwareMap.get(Servo.class, "hammerR");
+        drone = hardwareMap.get(Servo.class, "drone");
         outtake = hardwareMap.get(CRServo.class, "outtake");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
@@ -127,18 +128,36 @@ public class Teleop extends OpMode {
             hammerL.setPosition(0.7);
             hammerR.setPosition(0.1);
         }
-        double liftPower = controller.calculate(liftL.getCurrentPosition(), -targetPosition);
+        if(gamepad1.dpad_up){
+            drone.setPosition(0.5);
+        } else if(gamepad1.dpad_down){
+            drone.setPosition(0.2);
+        }
+        if(!gamepad2.b){
+            double liftPower = controller.calculate(liftL.getCurrentPosition(), -targetPosition);
+            liftR.setPower(-liftPower);
+            liftL.setPower(liftPower);
+        } else{
+            double liftPower = gamepad2.left_stick_y;
+            liftL.setPower(liftPower);
+            liftR.setPower(-liftPower);
+            if(gamepad2.share){
+                liftR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                liftL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        liftR.setPower(-liftPower);
-        liftL.setPower(liftPower);
+                liftR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+        }
+
 
         telemetry.addData("gametime", gametime.time());
 
-        /* <-- this works but its annoying to have in teleop for now
-        if(gametime.time() > 115){
+        /*// <-- this works but its annoying to have in teleop for now
+        if(gametime.time() > 118){
             controller.setP(0.008);
         }
-        */
+*/
 
     }
 }

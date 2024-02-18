@@ -39,6 +39,24 @@ public class RedFar extends OpMode {
     public static int lowerVal = 165; //160 before
     public static int upperVal = 180;
 
+    Action TrajectoryLeft1;
+    Action TrajectoryLeft2;
+    Action TrajectoryLeft3;
+    Action TrajectoryLeft4;
+    Action TrajectoryLeft5;
+
+    Action TrajectoryMiddle1;
+    Action TrajectoryMiddle2;
+    Action TrajectoryMiddle3;
+    Action TrajectoryMiddle4;
+    Action TrajectoryMiddle5;
+
+    Action TrajectoryRight1;
+    Action TrajectoryRight2;
+    Action TrajectoryRight3;
+    Action TrajectoryRight4;
+    Action TrajectoryRight5;
+
     public class Lift {
         private DcMotorEx liftL, liftR;
 
@@ -69,14 +87,14 @@ public class RedFar extends OpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    liftL.setPower(0.5);
-                    liftR.setPower(0.5);
+                    liftL.setPower(0.6);
+                    liftR.setPower(0.6);
                     initialized = true;
                 }
 
                 double pos = liftL.getCurrentPosition();
                 packet.put("liftPos", pos);
-                if (pos < 1100) {
+                if (pos < 1300) {
                     return true;
                 } else {
                     liftR.setPower(0);
@@ -100,8 +118,8 @@ public class RedFar extends OpMode {
                 if (!initialized) {
                     axonL.setPosition(0.51);
                     axonR.setPosition(0.45);
-                    liftL.setPower(-0.3);
-                    liftR.setPower(-0.3);
+                    liftL.setPower(-0.5);
+                    liftR.setPower(-0.5);
                     initialized = true;
                 }
 
@@ -162,6 +180,79 @@ public class RedFar extends OpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-40, -60, Math.toRadians(90)));
+        drive.pose = new Pose2d(-40, -60, Math.toRadians(90));
+
+        TrajectoryLeft1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-45, -15, Math.toRadians(270)), Math.PI/2)
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(-48, -21, Math.toRadians(270)), Math.PI)
+                .build();
+        TrajectoryLeft2 = drive.actionBuilder(new Pose2d(-48, -21, Math.toRadians(270)))
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(-63.5, -11.5, Math.toRadians(180)), Math.toRadians(270))
+                .build();
+        TrajectoryLeft3 = drive.actionBuilder(new Pose2d(-63.5, -11.5, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, -11), 0)
+                .splineToConstantHeading(new Vector2d(44, -28), 0) //-52
+                .build();
+        TrajectoryLeft4 = drive.actionBuilder(new Pose2d(44, -28, Math.PI))
+                .splineToConstantHeading(new Vector2d(30, -7), Math.PI)
+                .splineToConstantHeading(new Vector2d(-67.5, -7) , Math.PI)
+                .build();
+        TrajectoryLeft5 = drive.actionBuilder(new Pose2d(-67.5, -6, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, -6), 0)
+                .splineToConstantHeading(new Vector2d(43, -28), 0) //-52
+                .build();
+
+        TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
+                .splineToSplineHeading(new Pose2d(-48, -26, Math.toRadians(0)), Math.PI/2)
+                .build();
+        TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(-48, -26, Math.toRadians(0)))
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(-64, -10.5, Math.toRadians(180)), Math.PI/2)
+                .build();
+        TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(-64, -10.5, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(30, -11), 0)
+                .splineToConstantHeading(new Vector2d(45, -34), 0) //-52
+                .build();
+        TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(45, -34, Math.PI))
+                .splineToConstantHeading(new Vector2d(30, -6), Math.PI)
+                .splineToConstantHeading(new Vector2d(-66.5, -6) , Math.PI)
+                .build();
+        TrajectoryMiddle5 = drive.actionBuilder(new Pose2d(-66.5, -6, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, -6), 0)
+                .splineToConstantHeading(new Vector2d(44, -30), 0) //-52
+                .build();
+
+        TrajectoryRight1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-38, -33, Math.toRadians(0)), Math.PI/2)
+                .build();
+        TrajectoryRight2 = drive.actionBuilder(new Pose2d(-38, -33, Math.toRadians(0)))
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(-48, -11, Math.toRadians(180)), Math.PI)
+                .splineToSplineHeading(new Pose2d(-63.5, -11, Math.toRadians(180)), 0)
+                .build();
+        TrajectoryRight3 = drive.actionBuilder(new Pose2d(-63.5, -11, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(30, -11), 0)
+                .splineToConstantHeading(new Vector2d(42, -37), 0) //-52
+                .build();
+        TrajectoryRight4 = drive.actionBuilder(new Pose2d(42, -37, Math.toRadians(180)))
+                .splineToConstantHeading(new Vector2d(30, -6), Math.PI)
+                .splineToConstantHeading(new Vector2d(-67.2, -6) , Math.PI)
+                .build();
+        TrajectoryRight5 = drive.actionBuilder(new Pose2d(-67.2, -7, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(28, -6), 0)
+                .splineToConstantHeading(new Vector2d(39, -25), 0) //-52
+                .build();
+
         telemetry.addLine("initialized");
     }
     @Override
@@ -174,79 +265,6 @@ public class RedFar extends OpMode {
     @Override
     public void start() {
         Lift lift = new Lift(hardwareMap);
-
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-40, -60, Math.toRadians(90)));
-        drive.pose = new Pose2d(-40, -60, Math.toRadians(90));
-
-        Action TrajectoryLeft1 = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-45, -10, Math.toRadians(270)), Math.PI/2)
-                .setReversed(true)
-                .splineToSplineHeading(new Pose2d(-48, -21, Math.toRadians(270)), Math.PI/2)
-                .build();
-        Action TrajectoryLeft2 = drive.actionBuilder(new Pose2d(-48, -21, Math.toRadians(270)))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-63.5, -11, Math.toRadians(180)), Math.toRadians(270))
-                .build();
-        Action TrajectoryLeft3 = drive.actionBuilder(new Pose2d(-63.5, -11, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, -11), 0)
-                .splineToConstantHeading(new Vector2d(44, -29), 0) //-52
-                .build();
-        Action TrajectoryLeft4 = drive.actionBuilder(new Pose2d(44, -29, Math.PI))
-                .splineToConstantHeading(new Vector2d(30, -6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, -7) , Math.PI)
-                .build();
-        Action TrajectoryLeft5 = drive.actionBuilder(new Pose2d(-67.5, -7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, -6), 0)
-                .splineToConstantHeading(new Vector2d(45, -30), 0) //-52
-                .build();
-
-        Action TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
-                .splineToSplineHeading(new Pose2d(-47, -24, Math.toRadians(0)), Math.PI/2)
-                .build();
-        Action TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(-47, -24, Math.toRadians(0)))
-                .setReversed(true)
-                .splineToSplineHeading(new Pose2d(-63.5, -11, Math.toRadians(180)), Math.PI/2)
-                .build();
-        Action TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(-63.5, -11, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, -11), 0)
-                .splineToConstantHeading(new Vector2d(44, -29), 0) //-52
-                .build();
-        Action TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(44, -29, Math.PI))
-                .splineToConstantHeading(new Vector2d(30, -6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, -7) , Math.PI)
-                .build();
-        Action TrajectoryMiddle5 = drive.actionBuilder(new Pose2d(-67.5, -7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, -6), 0)
-                .splineToConstantHeading(new Vector2d(45, -30), 0) //-52
-                .build();
-
-        Action TrajectoryRight1 = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-33, -33, Math.toRadians(0)), Math.PI/2)
-                .build();
-        Action TrajectoryRight2 = drive.actionBuilder(new Pose2d(-33, -33, Math.toRadians(0)))
-                .setReversed(true)
-                .splineToSplineHeading(new Pose2d(-48, -11, Math.toRadians(180)), Math.PI)
-                .splineToSplineHeading(new Pose2d(-63.5, -11, Math.toRadians(180)), 0)
-                .build();
-        Action TrajectoryRight3 = drive.actionBuilder(new Pose2d(-63.5, -11, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, -11), 0)
-                .splineToConstantHeading(new Vector2d(44, -29), 0) //-52
-                .build();
-        Action TrajectoryRight4 = drive.actionBuilder(new Pose2d(44, -29, Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(30, -6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, -7) , Math.PI)
-                .build();
-        Action TrajectoryRight5 = drive.actionBuilder(new Pose2d(-67.5, -7, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, -6), 0)
-                .splineToConstantHeading(new Vector2d(45, -30), 0) //-52
-                .build();
-
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
             visionPortal.stopLiveView();
             visionPortal.stopStreaming();
@@ -258,6 +276,7 @@ public class RedFar extends OpMode {
         }
         switch (recordedPropPosition) {
             case LEFT:
+
                 Actions.runBlocking(TrajectoryLeft1);
                 intake.setPower(-0.8);
 
@@ -277,7 +296,7 @@ public class RedFar extends OpMode {
                 hammerL.setPosition(0.7);
                 hammerR.setPosition(0.1);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -295,7 +314,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(1200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -314,7 +333,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(600);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -323,7 +342,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(600);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -332,7 +351,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1); //out pos
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(600);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -350,7 +369,7 @@ public class RedFar extends OpMode {
                 intake.setPower(0);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1200);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -384,7 +403,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -401,7 +420,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -421,7 +440,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -430,7 +449,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -439,7 +458,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1); //out pos
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -492,7 +511,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -510,7 +529,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(750);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -530,7 +549,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -539,7 +558,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.7);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -548,7 +567,7 @@ public class RedFar extends OpMode {
                 hammerR.setPosition(0.1); //out pos
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(750);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -562,7 +581,7 @@ public class RedFar extends OpMode {
 
                 hammerL.setPosition(0.1);
                 hammerR.setPosition(0.7);
-                outtake.setPower(-1);
+                outtake.setPower(-0.7);
                 intake.setPower(0);
 
                 try {

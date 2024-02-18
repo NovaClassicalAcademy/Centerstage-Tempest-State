@@ -15,34 +15,22 @@ public class MeepMeepTesting {
                 .setConstraints(40, 40, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-40, 60, Math.toRadians(270)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11.5, -60, Math.toRadians(90)))
                 //1
-                .splineToLinearHeading(new Pose2d(-45, 10, Math.toRadians(90)), Math.PI/2)
-
-                .splineToSplineHeading(new Pose2d(-48, 21, Math.toRadians(90)), Math.PI/2)
-                                .waitSeconds(1)
-                //2
+                .splineToLinearHeading(new Pose2d(9, -28, Math.toRadians(180)), Math.PI / 2)
+                        .waitSeconds(1)
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(-63.5, 11, Math.toRadians(180)), Math.toRadians(270))
-                //3
+                .splineToConstantHeading(new Vector2d(49, -25), Math.PI / 2)
+                        .waitSeconds(1)
+                .splineToConstantHeading(new Vector2d(11.5, -45), Math.PI) //-52
+                .splineToConstantHeading(new Vector2d(-40, -45), Math.PI) //-52
+                .splineToConstantHeading(new Vector2d(-57, -20), Math.PI)
+                .lineToX(-62)
+                        .waitSeconds(1)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(30, 11), 0)
-                .splineToConstantHeading(new Vector2d(44, 29), 0) //-52
-                                .waitSeconds(1)
-                //4
-                .splineToConstantHeading(new Vector2d(30, 6), Math.PI)
-                .splineToConstantHeading(new Vector2d(-67.5, 7) , Math.PI)
-                                .waitSeconds(1)
-                //5
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(28, 6), 0)
-                .splineToConstantHeading(new Vector2d(45, 30), 0) //-52
-                                .waitSeconds(1)
-
-
-
-
-
+                .splineToConstantHeading(new Vector2d(-40, -39), 0)
+                .splineToConstantHeading(new Vector2d(11.5, -39), 0)
+                .splineToConstantHeading(new Vector2d(47, -28), 0)
 
                 /*
 

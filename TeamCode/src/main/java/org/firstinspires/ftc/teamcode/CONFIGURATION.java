@@ -15,7 +15,7 @@ public class CONFIGURATION {
     Servos
             - Port 0: hammerR
             - Port 1:
-            - Port 2:
+            - Port 2: drone
             - Port 3:
             - Port 4:
             - Port 5: hammerL

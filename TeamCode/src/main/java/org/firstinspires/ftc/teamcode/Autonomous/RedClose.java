@@ -34,10 +34,22 @@ public class RedClose extends OpMode {
     private VisionPortal visionPortal;
     private ColourMassDetectionProcessor colourMassDetectionProcessor;
     private DcMotorEx frontLeft, frontRight, backLeft, backRight, intake;
-    public Servo hammerL, hammerR;
+    public Servo hammerL, hammerR, drone;
     public CRServo outtake;
     public static int lowerVal = 165; //160 before
     public static int upperVal = 180;
+    Action TrajectoryLeft1;
+    Action TrajectoryLeft2;
+    Action TrajectoryLeft3;
+    Action TrajectoryLeft4;
+    Action TrajectoryMiddle1;
+    Action TrajectoryMiddle2;
+    Action TrajectoryMiddle3;
+    Action TrajectoryMiddle4;
+    Action TrajectoryRight1;
+    Action TrajectoryRight2;
+    Action TrajectoryRight3;
+    Action TrajectoryRight4;
 
     public class Lift {
         private DcMotorEx liftL, liftR;
@@ -49,6 +61,7 @@ public class RedClose extends OpMode {
             liftR = hardwareMap.get(DcMotorEx.class, "liftR");
             axonL = hardwareMap.get(Servo.class, "axonL");
             axonR = hardwareMap.get(Servo.class, "axonR");
+
 
             liftR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             liftL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -124,9 +137,8 @@ public class RedClose extends OpMode {
     @Override
     public void init() {
 
-
-        Scalar lower = new Scalar(lowerVal,50,50); // the lower hsv threshold for Red
-        Scalar upper = new Scalar(upperVal,255,255); // the upper hsv threshold for Red
+        Scalar lower = new Scalar(lowerVal, 50, 50); // the lower hsv threshold for Red
+        Scalar upper = new Scalar(upperVal, 255, 255); // the upper hsv threshold for Red
 
         double minArea = 200;
 
@@ -154,14 +166,101 @@ public class RedClose extends OpMode {
         outtake = hardwareMap.get(CRServo.class, "outtake");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
+        drone = hardwareMap.get(Servo.class, "drone");
+
+        drone.setPosition(0.2);
+
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
+
+
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.5, -60, Math.toRadians(90)));
+
+        drive.pose = new Pose2d(11.5, -60, Math.toRadians(90));
+
+        TrajectoryLeft1 = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(10, -28, Math.toRadians(180)), Math.PI / 2)
+                .build();
+        //lift up and axons move to scoring pose
+        TrajectoryLeft2 = drive.actionBuilder(new Pose2d(10, -28, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(49, -25), Math.PI / 2)
+                .build();
+        TrajectoryLeft3 = drive.actionBuilder(new Pose2d(49, -25, Math.toRadians(180)))
+                .strafeTo(new Vector2d(48, -56))
+                .build();
+
+        //score
+        //bring arm back down
+        /*TrajectoryLeft3 = drive.actionBuilder(new Pose2d(49, -25, Math.toRadians(180)))
+                .splineToConstantHeading(new Vector2d(11.5, -45), Math.PI) //-52
+                .splineToConstantHeading(new Vector2d(-40, -45), Math.PI) //-52
+                .splineToConstantHeading(new Vector2d(-57, -22), Math.PI)
+                .lineToX(-62)
+                .build();
+        //intake pixels
+        TrajectoryLeft4 = drive.actionBuilder(new Pose2d(-62, -22, Math.PI))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-40, -39), 0)
+                .splineToConstantHeading(new Vector2d(11.5, -39), 0)
+                .splineToConstantHeading(new Vector2d(47, -28), 0)
+                .build();
+*/
+        //score pixels
+        TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
+                .setTangent(0)
+                .splineToLinearHeading(new Pose2d(11.5, -28, Math.toRadians(90)), Math.PI / 2)
+                .build();
+        TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(11.5, -28, Math.toRadians(90)))
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(49.5, -31, Math.toRadians(180)), Math.PI / 2)
+                .build();
+
+        TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(49.5, -33, Math.toRadians(180)))
+                .strafeTo(new Vector2d(49, -50))
+                .build();
+        /*
+        TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(-59, -24.5, Math.PI)) //27
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-40, -43), 0) //48
+                .splineToConstantHeading(new Vector2d(11.5, -43), 0)
+                .splineToConstantHeading(new Vector2d(48.5, -34), 0)
+                .build();
+*/
+        TrajectoryRight1 = drive.actionBuilder(drive.pose)
+                .setTangent(0)
+                .splineToLinearHeading(new Pose2d(31, -29, Math.toRadians(180)), Math.PI / 2)
+                .build();
+        TrajectoryRight2 = drive.actionBuilder(new Pose2d(31, -29, Math.toRadians(180)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(49, -39), 0)
+                .build();
+        TrajectoryRight3 = drive.actionBuilder(new Pose2d(49, -39, Math.toRadians(180)))
+                .strafeTo(new Vector2d(49, -48))
+                .build();
+        /*
+        TrajectoryRight3 = drive.actionBuilder(new Pose2d(49, -42, Math.toRadians(180)))
+                .setReversed(false)
+                .splineToConstantHeading(new Vector2d(11.5, -53), Math.PI)
+                .splineToConstantHeading(new Vector2d(-40, -53), Math.PI)
+                .splineToConstantHeading(new Vector2d(-58, -24.5), Math.PI) //26.5
+                .lineToX(-60.3)
+                .build();
+        TrajectoryRight4 = drive.actionBuilder(new Pose2d(-60.3, -24.5, Math.PI))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-40, -43), 0) //48
+                .splineToConstantHeading(new Vector2d(11.5, -43), 0)
+                .splineToConstantHeading(new Vector2d(48, -22), 0)
+                .build();
+
+         */
 
         telemetry.addLine("initialized");
     }
@@ -176,79 +275,6 @@ public class RedClose extends OpMode {
     @Override
     public void start() {
         Lift lift = new Lift(hardwareMap);
-
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.5, -60, Math.toRadians(90)));
-        drive.pose = new Pose2d(11.5, -60, Math.toRadians(90));
-
-        Action TrajectoryLeft1 = drive.actionBuilder(drive.pose)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(11, -28, Math.toRadians(180)), Math.PI / 2)
-                .build();
-        //lift up and axons move to scoring pose
-        Action TrajectoryLeft2 = drive.actionBuilder(new Pose2d(11, -28, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(49, -25), Math.PI / 2)
-                .build();
-        //score
-        //bring arm back down
-        Action TrajectoryLeft3 = drive.actionBuilder(new Pose2d(49, -25, Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(11.5, -51), Math.PI) //-52
-                .splineToConstantHeading(new Vector2d(-40, -51), Math.PI) //-52
-                .splineToConstantHeading(new Vector2d(-57, -26.5), Math.PI)
-                .lineToX(-60)
-                .build();
-        //intake pixels
-        Action TrajectoryLeft4 = drive.actionBuilder(new Pose2d(-57, -26, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, -45), 0)
-                .splineToConstantHeading(new Vector2d(11.5, -45), 0)
-                .splineToConstantHeading(new Vector2d(48.5, -28), 0)
-                .build();
-
-        //score pixels
-        Action TrajectoryMiddle1 = drive.actionBuilder(drive.pose)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(11.5, -31, Math.toRadians(90)), Math.PI / 2)
-                .build();
-        Action TrajectoryMiddle2 = drive.actionBuilder(new Pose2d(11.5, -31, Math.toRadians(90)))
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(49, -33, Math.toRadians(180)), Math.PI / 2)
-                .build();
-        Action TrajectoryMiddle3 = drive.actionBuilder(new Pose2d(49, -33, Math.toRadians(180)))
-                .setReversed(false)
-                .splineToConstantHeading(new Vector2d(11.5, -52), Math.PI)
-                .splineToConstantHeading(new Vector2d(-40, -52), Math.PI)
-                .splineToConstantHeading(new Vector2d(-57, -27), Math.PI)
-                .lineToX(-59)
-                .build();
-        Action TrajectoryMiddle4 = drive.actionBuilder(new Pose2d(-59, -27, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, -48), 0)
-                .splineToConstantHeading(new Vector2d(11.5, -48), 0)
-                .splineToConstantHeading(new Vector2d(48.5, -34), 0)
-                .build();
-
-        Action TrajectoryRight1 = drive.actionBuilder(drive.pose)
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(32, -29, Math.toRadians(180)), Math.PI / 2)
-                .build();
-        Action TrajectoryRight2 = drive.actionBuilder(new Pose2d(32, -29, Math.toRadians(180)))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(49, -42), 0)
-                .build();
-        Action TrajectoryRight3 = drive.actionBuilder(new Pose2d(49, -42, Math.toRadians(180)))
-                .setReversed(false)
-                .splineToConstantHeading(new Vector2d(11.5, -53), Math.PI)
-                .splineToConstantHeading(new Vector2d(-40, -53), Math.PI)
-                .splineToConstantHeading(new Vector2d(-58, -26.5), Math.PI)
-                .lineToX(-60.3)
-                .build();
-        Action TrajectoryRight4 = drive.actionBuilder(new Pose2d(-60.3, -26.5, Math.PI))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-40, -48), 0)
-                .splineToConstantHeading(new Vector2d(11.5, -48), 0)
-                .splineToConstantHeading(new Vector2d(48, -22), 0)
-                .build();
 
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
             visionPortal.stopLiveView();
@@ -286,7 +312,13 @@ public class RedClose extends OpMode {
                     throw new RuntimeException(e);
                 }
                 outtake.setPower(0);
-
+                Actions.runBlocking(
+                        new ParallelAction(
+                                lift.liftDown(),
+                                TrajectoryLeft3
+                        )
+                );
+/*
                 Actions.runBlocking(
                         new ParallelAction(
                                 lift.liftDown(),
@@ -340,7 +372,10 @@ public class RedClose extends OpMode {
                 }
                 intake.setPower(0);
                 outtake.setPower(0);
-
+                Actions.runBlocking(
+                        lift.liftDown()
+                );
+*/
                 break;
             case MIDDLE:
                 Actions.runBlocking(TrajectoryMiddle1);
@@ -375,6 +410,7 @@ public class RedClose extends OpMode {
                                 TrajectoryMiddle3
                         )
                 );
+                /*
                 intake.setPower(1);
                 outtake.setPower(1);
                 hammerL.setPosition(0.7);
@@ -421,6 +457,11 @@ public class RedClose extends OpMode {
                 }
                 intake.setPower(0);
                 outtake.setPower(0);
+                Actions.runBlocking(
+                        lift.liftDown()
+                );
+
+                 */
                 break;
 
             case RIGHT:
@@ -456,6 +497,7 @@ public class RedClose extends OpMode {
                                 TrajectoryRight3
                         )
                 );
+                /*
                 intake.setPower(1);
                 outtake.setPower(1);
                 hammerL.setPosition(0.7);
@@ -501,6 +543,11 @@ public class RedClose extends OpMode {
                 }
                 intake.setPower(0);
                 outtake.setPower(0);
+                Actions.runBlocking(
+                        lift.liftDown()
+                );
+
+                 */
                 break;
         }
     }
