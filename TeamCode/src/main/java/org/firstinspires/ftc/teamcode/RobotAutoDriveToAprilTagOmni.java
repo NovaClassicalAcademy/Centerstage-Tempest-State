@@ -24,13 +24,13 @@ import java.util.concurrent.TimeUnit;
 
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
-    final double DESIRED_DISTANCE = 10.0; //inches
-    final double SPEED_GAIN  =  0.008  ;
-    final double STRAFE_GAIN =  0.009 ;
+    final double DESIRED_DISTANCE = 8; //inches
+    final double SPEED_GAIN  =  0.015  ;
+    final double STRAFE_GAIN =  0.01 ;
     final double TURN_GAIN   =  0.005 ;
 
-    final double MAX_AUTO_SPEED = 0.4;
-    final double MAX_AUTO_STRAFE= 0.4;
+    final double MAX_AUTO_SPEED = 0.5;
+    final double MAX_AUTO_STRAFE= 0.3;
     final double MAX_AUTO_TURN  = 0.3;
 
     private DcMotor leftFrontDrive   = null;
@@ -55,7 +55,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         initAprilTag();
 
 
-
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
@@ -68,7 +67,9 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         if (USE_WEBCAM)
             setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
@@ -127,16 +128,16 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
                 drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
-                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+                strafe   = Range.clip(headingError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE) ;
+                turn = Range.clip(-yawError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
 
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             } else {
 
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-                drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-                turn = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-                strafe   = -gamepad1.right_stick_x / 2.0;  // Reduce turn rate to 33%.
+                drive  = -gamepad1.left_stick_y  / 1.1;  // Reduce drive rate to 50%.
+                strafe = -gamepad1.left_stick_x  / 1.1;  // Reduce strafe rate to 50%.
+                turn   = -gamepad1.right_stick_x / 1.33;  // Reduce turn rate to 33%.
                 telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
             telemetry.update();
@@ -236,4 +237,5 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
             sleep(20);
         }
     }
+
 }

@@ -29,7 +29,6 @@ public class BasicPIDController {
     public void setP(double p) {
         this.kP = p;
     }
-
     public void setI(double i) {
         this.kI = i;
     }

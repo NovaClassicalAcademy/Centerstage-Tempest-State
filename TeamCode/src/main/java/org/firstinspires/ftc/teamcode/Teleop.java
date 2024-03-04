@@ -11,9 +11,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.BasicPIDController;
+
 import java.util.List;
 @Config
-@TeleOp (name = "Tele-Op", group = "alpha")
+@TeleOp (name = "TempestTeleop", group = "alpha")
 
 public class Teleop extends OpMode {
     public BasicPIDController controller;
@@ -54,8 +56,8 @@ public class Teleop extends OpMode {
         axonL.setPosition(0.51);
         axonR.setPosition(0.45);
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
@@ -69,25 +71,27 @@ public class Teleop extends OpMode {
     @Override
     public void loop() {
 
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
-
         if(gamepad1.left_trigger > 0.1){
             driveMultiplier = 0.4;
         }else {
             driveMultiplier = 1;
         }
-        double frontLeftPower = (y + x + rx) * driveMultiplier;
-        double backLeftPower = (y - x + rx) * driveMultiplier;
-        double frontRightPower = (y - x - rx) * driveMultiplier;
-        double backRightPower = (y + x - rx) * driveMultiplier;
+        double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
+        double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+        double rightX = gamepad1.right_stick_x * 0.5;
+        double v1 = r * Math.cos(robotAngle) + rightX;
+        double v2 = r * Math.sin(robotAngle) - rightX;
+        double v3 = r * Math.sin(robotAngle) + rightX;
+        double v4 = r * Math.cos(robotAngle) - rightX;
 
-        frontLeft.setPower(frontLeftPower);
-        backLeft.setPower(backLeftPower);
-        frontRight.setPower(frontRightPower);
-        backRight.setPower(backRightPower);
-
+        v1 = (v1 * driveMultiplier * -1);
+        v2 = (v2 * driveMultiplier * -1);
+        v3 = (v3 * driveMultiplier * -1);
+        v4 = (v4 * driveMultiplier * -1);
+        frontLeft.setPower(v1 * 1);
+        frontRight.setPower(v2 * 1);
+        backLeft.setPower(v3 * 1);
+        backRight.setPower(v4 * 1);
         if(gamepad2.dpad_up) {
             targetPosition += 16;
             if(targetPosition >= 2100){             //top lift regulator
